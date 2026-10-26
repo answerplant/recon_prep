@@ -1,0 +1,21 @@
+{
+  "id_field": "object_number",
+  "institution_field": "institution",
+  "text_fields": {
+    "title": "Title",
+    "object_name": "Object name",
+    "materials": "Materials",
+    "maker": "Maker",
+    "place_made": "Place made",
+    "dimensions_unit": "Unit",
+    "description": "Description"
+  },
+  "max_text_chars": 1500,
+  "terms": [
+    {"field": "object_name", "kind": "concept", "gold_field": "object_name_aat"},
+    {"field": "materials", "kind": "concept", "split": ";"},
+    {"field": "maker", "kind": "person", "split": ";"},
+    {"field": "place_made", "kind": "place"},
+    {"field": "dimensions_unit", "kind": "unit"}
+  ]
+}

@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# HTTP response cache and local Getty index (rebuild with build_index.py; the index is ~1.6 GB)
+cache/
+*.sqlite
+
+# Generated data: candidates, review sheets, splits, training runs
+out/
+runs/

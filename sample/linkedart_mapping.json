@@ -1,0 +1,27 @@
+{
+  "id_field": "id",
+  "institution_field": "current_owner._label",
+  "record_where": "type=HumanMadeObject",
+  "text_fields": {
+    "identified_by[classified_as.id=http://vocab.getty.edu/aat/300404670].content": "Title",
+    "produced_by.carried_out_by._label": "Creator",
+    "produced_by.influenced_by._label": "Contributor",
+    "produced_by.took_place_at._label": "Place made",
+    "used_for.carried_out_by._label": "Publisher",
+    "used_for.took_place_at._label": "Place of publication",
+    "produced_by.timespan.identified_by.content": "Date",
+    "about._label": "Subject",
+    "language._label": "Language",
+    "referred_to_by[classified_as.id=http://vocab.getty.edu/aat/300435416].content": "Description",
+    "referred_to_by[classified_as.id=http://vocab.getty.edu/aat/300435452].content": "Physical description"
+  },
+  "max_text_chars": 1500,
+  "terms": [
+    {"field": "produced_by.carried_out_by._label", "entity_field": "produced_by.carried_out_by.id", "kind_field": "produced_by.carried_out_by.type", "kind": "person"},
+    {"field": "produced_by.influenced_by._label", "entity_field": "produced_by.influenced_by.id", "kind_field": "produced_by.influenced_by.type", "kind": "person"},
+    {"field": "used_for.carried_out_by._label", "entity_field": "used_for.carried_out_by.id", "kind_field": "used_for.carried_out_by.type", "kind": "group"},
+    {"field": "produced_by.took_place_at._label", "entity_field": "produced_by.took_place_at.id", "kind": "place"},
+    {"field": "used_for.took_place_at._label", "entity_field": "used_for.took_place_at.id", "kind": "place"},
+    {"field": "about._label", "entity_field": "about.id", "kind_field": "about.type", "kind": "concept"}
+  ]
+}

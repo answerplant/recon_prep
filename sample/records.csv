@@ -1,0 +1,7 @@
+object_number,institution,title,object_name,object_name_aat,materials,maker,place_made,dimensions_unit,description
+EX.2001.14,Example Museum A,Penny of Edward I,coin,http://vocab.getty.edu/aat/300037222,silver,,London,millimetres,"Silver penny, long cross reverse, struck at the London mint."
+EX.1998.3,Example Museum A,Torso,sculpture,http://vocab.getty.edu/aat/300047090,bronze,Barbara Hepworth,St Ives,centimetres,Abstract bronze figure cast from a carved original.
+EX.2010.77,Example Museum A,Jasperware vase,vase,http://vocab.getty.edu/aat/300132254,stoneware; jasper,Wedgwood,Stoke-on-Trent,centimetres,Blue jasper vase with white relief decoration after Flaxman.
+EX.1955.201,Example Museum B,View of the Minster,painting,,oil paint; canvas,,York,inches,"Oil on canvas view of York Minster from the city walls, unsigned."
+EX.1987.5,Example Museum B,Love token,token,none,copper,,,millimetres,Worn copper coin with both faces smoothed and engraved with initials and a heart.
+EX.1990.12,Example Museum B,Sampler,sampler,,silk; linen,Mary Wood,Yorkshire,centimetres,Embroidered alphabet sampler worked in cross stitch by a girl aged eleven.
