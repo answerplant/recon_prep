@@ -27,6 +27,27 @@ candidates.jsonl ──review.py export──▶ review.csv (people fill "choice
                                    new records → same read / clean / retrieve → Classifier ◀───────┘
 ```
 
+In words, the pipeline runs in five stages:
+
+1. **Read.** `records.py` reads your records (CSV, JSONL or nrich_la's Linked Art bundles) through a mapping file.
+   The mapping says which field is the record id, which fields make up the context text the model will read, and
+   which fields hold the terms to link, with each term's kind (concept, person, group or place).
+2. **Clean and retrieve.** `build_candidates.py` drives this stage. Each term is optionally tidied by `clean.py`
+   (catalogue dates, titles and punctuation removed) and then searched in Getty by `retrieve.py`, using either the
+   live service or the local index built by `build_index.py`. The result is `candidates.jsonl`: one row per term,
+   with its record text and up to 22 ranked candidates.
+3. **Review.** `review.py export` turns the candidates into a spreadsheet, one question per term or per entity.
+   People pick the right candidate, `none` or `skip` in the `choice` column. `review.py import` reads their answers
+   back and writes `labelled.jsonl`.
+4. **Split.** `make_splits.py` divides the labelled terms into train, val and test files, by record or by
+   institution, and writes each row in the layout Yale's `train.py` expects, with the `none` label added.
+5. **Train and use.** `train.py`, from Yale's model repo, fine-tunes the model on a GPU and saves the best
+   checkpoint. To link new records, they go through exactly the same read, clean and retrieve steps, and the
+   checkpoint, loaded with gliner2's `Classifier`, picks one candidate or `none` for each term.
+
+Stages 1 to 4 need only this repo and the standard library. Stage 5 needs `gliner2` and a GPU. The same code builds
+the model's input in training and in use, which is what keeps the two consistent.
+
 | File | What it does |
 | --- | --- |
 | `records.py` | Reads CSV/JSONL records (gzipped, or a folder of them) through a mapping file: which fields are the id, the context text and the terms (with kind) |
@@ -197,12 +218,23 @@ The training code is Yale's, not part of this repo. It does full fine-tuning: th
 classification head are updated.
 
 **a. Set up.** You need a CUDA GPU. With the defaults, the longest batch peaks at about 21 GiB, so a 24 GB card
-or larger. Then fetch the scripts:
+or larger. Make a virtual environment with [uv](https://docs.astral.sh/uv/) (current Debian and Ubuntu refuse
+`pip install` into the system Python), install the packages and fetch the scripts:
 
 ```bash
-pip install gliner2 huggingface_hub
-huggingface-cli download yale-cultural-heritage/GLiNER2.5-Decide-linkedart-recon training/train.py training/recon_data.py --local-dir .
+curl -LsSf https://astral.sh/uv/install.sh | sh   # once, if uv isn't installed
+uv venv --python 3.12 .venv
+source .venv/bin/activate
+uv pip install torch numpy transformers gliner2 huggingface_hub
+python -c "import torch; print(torch.cuda.is_available())"   # must print True
+hf download yale-cultural-heritage/GLiNER2.5-Decide-linkedart-recon training/train.py training/recon_data.py --local-dir .
 ```
+
+Python 3.12 rather than the system Python, because PyTorch wheels lag new Python releases. `torch`, `numpy` and
+`transformers` are listed explicitly because `gliner2` doesn't install them. The default Linux `torch` wheel bundles
+CUDA 12; if the check prints `False`, run `nvidia-smi` to see the CUDA version your driver supports and install a
+matching build, for example `uv pip install torch --index-url https://download.pytorch.org/whl/cu126`. The rest of
+this guide assumes the environment is activated; otherwise prefix each `python` command with `uv run`.
 
 Copy `out/splits/` to the same machine. `train.py` imports `recon_data.py` from its own folder, so keep the two together.
 
@@ -320,7 +352,7 @@ A GPU makes it faster: about 0.1 s per term on one GPU, about 0.15 s on an Apple
 nrich_la as `equivalent`, and the next export will have them as gold labels.
 
 **Sharing the model:** the checkpoint folder is the whole model. Copy it, or upload it with
-`huggingface-cli upload <your-org>/<model-name> runs/full/checkpoints/best`. In the model card, state the base model
+`hf upload <your-org>/<model-name> runs/full/checkpoints/best`. In the model card, state the base model
 and its licence, and the Getty snapshot dates (Getty data is ODC-BY 1.0). Credit the training data's source too:
 for the NLS dataset, National Library of Scotland metadata, CC BY 4.0.
 
